@@ -2,3 +2,5 @@ mockups
 *~
 *.out
 *.h.gch
+*.o
+tigger

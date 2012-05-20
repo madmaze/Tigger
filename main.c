@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
-#include <string.h>    
+#include <string.h>
 #include <time.h>
 #include "tigger_util.h"
 #include "post_commit_hook.h"
@@ -77,10 +77,10 @@ char *trimwhitespace(char *str)
 
 int tiggerExists(){
 	FILE * file = fopen(".tigger", "r");
-	if(file){        
-		fclose(file);        
-		return 1;    
-	}    
+	if(file){
+		fclose(file);
+		return 1;
+	}
 	// printf("Sorry you need to initialize tigger before using this command.\n");
 	return 0;
 
@@ -143,12 +143,12 @@ int checkForGit(){
 }
 
 int initialize(){
-	/*This function does the following: 
+	/*This function does the following:
 	 -check to see if the current directory has a git repository in it
 	 -if so add a post-commit hook to the $GIT_DIR/hooks
 	 -create a .tigger file which contains all of our tasks
 	 */
-	if(tiggerExists()){  
+	if(tiggerExists()){
 		if (FORCE_FLAG == 0){
                         if (COLOR_FLAG) {
 			        fprintf_red(stdout, "Tigger has already been initialized in this directory.\n");
@@ -160,11 +160,11 @@ int initialize(){
 			        printf("Reinitializing will overwrite all of your current tasks.\n");
 			        printf("If you really want to reinitialize, you can use the -f or --force flag.\n\n");
 			        return 0;
-                        } 
-		}                           
+                        }
+		}
 	}
 	if (checkForGit()){
-		//now we go in and modify the post-commit hook file to our liking 
+		//now we go in and modify the post-commit hook file to our liking
 		FILE *file;
 		file = fopen(".git/hooks/post-commit", "w");
 		fprintf(file, "%s", POST_COMMIT_HOOK);
@@ -172,10 +172,10 @@ int initialize(){
 		system("chmod 744 .git/hooks/post-commit");
 		file = fopen(".tigger", "w");
 		fprintf(file, "BEGIN_TIGGER\n");
-		fclose(file);  
+		fclose(file);
 		system("git add .tigger");
 		file = fopen(".tigger_completed", "w"); \
-		fclose(file);                            
+		fclose(file);
 		system("git add .tigger_completed");
 		printf("Done.\n");
 		return 1;
@@ -283,24 +283,24 @@ int listTasks(){
 	}else{
 		if (COLOR_FLAG)
                         fprintf_blue(stdout, "Yay! You have no tasks remaining. Go have a beer.\n");
-                else 
+                else
                         printf("Yay! You have no tasks remaining. Go have a beer.\n");
 	}
 	fclose(file);
 	return 1;
-}    
+}
 
-int tiggerToday(){                                           
+int tiggerToday(){
 	int count = 0;
 	char * found;
-	char * delim = "<?TIG?>"; 
+	char * delim = "<?TIG?>";
 	char line[255];
-	char stime[10]; 
+	char stime[10];
 	int itime = 0;
-	FILE *file = fopen(".tigger_completed", "r");             
+	FILE *file = fopen(".tigger_completed", "r");
 	while(fgets(line, 255, file) != NULL){
-		if(!protectedText(line)){     
-			found = strstr(line, delim); 
+		if(!protectedText(line)){
+			found = strstr(line, delim);
 			int place = found-line;
 			strncpy(stime, line, place);
 			itime = atoi(stime);
@@ -317,7 +317,6 @@ int tiggerToday(){
 
         return 0;
 }
-     
 
 int completedTasks(){
 	/*This function does the following:
@@ -326,10 +325,10 @@ int completedTasks(){
 	 -close the .tigger_completed file
 	 */
 	char line[255];
-	int count = 0; 
+	int count = 0;
 	char * delim = "<?TIG?>";
-	char * found;   
-	size_t index;  
+	char * found;
+	size_t index;
 	char *new_string;
 	if(!tiggerExists()){
 		return 0;
@@ -341,11 +340,11 @@ int completedTasks(){
                 printf("\nLoading completed tasks from tigger...\n-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
 	while(fgets(line, 255, file) != NULL){
 		if(!protectedText(line)){
-			count += 1;    
+			count += 1;
 			found = strstr(line, delim);
 			if(found != NULL){
 				index = found - line;
-			}  
+			}
 			new_string = &line[index+7];
 			if (COLOR_FLAG) {
                                 fprintf_yellow(stdout, "Task ");
@@ -381,10 +380,10 @@ int completedTasks(){
 	fclose(file);
 	return 1;
 
-} 
+}
 
 
-int deleteTask(char * task){ 
+int deleteTask(char * task){
 	char line[255];
 	const char *TIGGER_FILE_NAME = ".tigger";
 	const char *TIGGER_TEMP = ".tigger_temp";
@@ -395,13 +394,13 @@ int deleteTask(char * task){
                 else
                         printf("Can't delete a null task.\n");
 		return 0;
-	}     
+	}
 	FILE *file = fopen(TIGGER_FILE_NAME, "r");
 	FILE *temp = fopen(TIGGER_TEMP, "w");
 	while(fgets(line, 255, file) != NULL){
 		if(strcmp(trimwhitespace(line), trimwhitespace(task)) != 0){
                         fprintf(temp, "%s",line);
-			fprintf(temp, "\n");  
+			fprintf(temp, "\n");
 		}else{
 			found = 1;
 		}
@@ -414,7 +413,7 @@ int deleteTask(char * task){
                 else
                         printf("We found your task and deleted it.\n");
 		system("rm .tigger");
-		rename(TIGGER_TEMP, TIGGER_FILE_NAME);  
+		rename(TIGGER_TEMP, TIGGER_FILE_NAME);
 		return 1;
 	}else{
 		system("rm .tigger_temp");
@@ -446,7 +445,7 @@ int processCommand(char *args[], int optind){
 		}else if(!strcmp(args[optind], "delete")){
 			return deleteTask(args[optind+1]);
 		}else if(!strcmp(args[optind], "today")){
-			tiggerToday();   
+			tiggerToday();
 			return 1;
 		}
 	}
@@ -462,7 +461,7 @@ void loadCommands(){
 	commands[2] = "tasks";
 	commands[3] = "tig";
 	commands[4] = "completed";
-	commands[5] = "delete"; 
+	commands[5] = "delete";
 	commands[6] = "today";
 }
 

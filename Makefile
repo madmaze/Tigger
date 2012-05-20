@@ -15,17 +15,15 @@ rubydeps:
 	@echo "Note that Ruby must be installed for this to work"
 	gem install grit                                         
 
-tigger : $(autogen) $(objects)
+tigger: $(autogen) $(objects)
+	@echo "Compiling Tigger....."
+	cc -Wall -c main.c
 	@echo "Linking source files..."
 	cc -o $@ $(objects)       
 
-post_commit_hook.h : post_commit_hook.rb
+post_commit_hook.h: post_commit_hook.rb
 	@echo "Generating commit_hook header"
 	./rb2h.rb POST_COMMIT_HOOK
 
-main.o : tigger_util.h main.c
-	@echo "Installing Tigger....."
-	cc -Wall -c main.c
-
 clean :
-	rm edit $(objects) $(generated_dependencies)
+	rm $(objects) $(generated_dependencies)
