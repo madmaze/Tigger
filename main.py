@@ -5,6 +5,16 @@ import os
 import shutil
 postCommitHookPath="./git-commit-hook.py"
 
+# Asks the user a question and veryfies y/n by returning True or False
+def confirmQuestion(Question):
+	var=""
+	while var != "y" and var != "n":
+		var = raw_input(Question + " (y/n):" )
+	if var == "y":
+		return True
+	else:
+		return False
+
 def initTigger(force):
 	if os.path.exists("./.tigger") and force == False:
 		print "It looks like tigger has already been initialized here."
@@ -14,21 +24,34 @@ def initTigger(force):
 	if os.path.isdir("./.git"):
 		# We are in the clear, we found git and no previous tigger
 		print "git found."
-		if not os.path.exists(".git/hooks/post-commit"):
-			try:
-				shutil.copyfile(postCommitHookPath,".git/hooks/post-commit")
-				# set permissions
-				os.system("chmod 744 .git/hooks/post-commit")
-				# todo: check permissions after setting
-			except err:
-				print err
-				print "failed to copy post-commit hook from",postCommitHookPath,"to .git/hooks/post-commit"
-		else:
+		if os.path.exists(".git/hooks/post-commit"):
 			print "ERROR: .git/hooks/post-commit hook already exists"
-			exit()
+			if confirmQuestion("Would you like to overwrite the existing hook?") == False:
+				print "exiting.."
+				exit()
+		try:
+			print "Installing postCommit hook.."
+			shutil.copyfile(postCommitHookPath,".git/hooks/post-commit")
+			# set permissions
+			os.system("chmod 744 .git/hooks/post-commit")
+			# todo: check permissions after setting
+		except err:
+			print err
+			print "failed to copy post-commit hook from",postCommitHookPath,"to .git/hooks/post-commit"
+		# Initialize files
+		os.system("touch .tigger")
+		os.system("touch .tigger_completed")
+		print "Created .tigger & .tigger_complete"
+		
+		# Add to repo
+		os.system("git add .tigger")
+		os.system("git add .tigger_completed")
+		print "Added .tigger & .tigger_complete to repo"		
+		
 	else:
 		print "ERROR: no git-repo found. (looking for .git)"
 		exit()
+	print "Init done."
 	
 
 if __name__ == "__main__":
