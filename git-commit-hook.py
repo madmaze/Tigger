@@ -1,13 +1,12 @@
 #! /usr/bin/env python
 
 import os
-import glob
 import datetime
 from subprocess import call
 commits=[]
 
 def main():
-	#getAllCommits()
+	# Grabs the latest commit and then sees if there is a matching task
 	lastCommit = getLastCommitMsg()
 	tasks = getTasks()
 	liveTasks = open(".tigger","w")
@@ -19,8 +18,8 @@ def main():
 		else:
 			liveTasks.write(t+"\n")
 			
-			
-	
+	liveTasks.close()
+	completedTasks.close()
 
 def getTasks():
 	taskFile = open(".tigger", "r")
