@@ -4,6 +4,7 @@ import optparse
 import os
 import shutil
 import json
+import datetime
 
 postCommitHookPath="./git-commit-hook.py"
 # todo: colored output?
@@ -65,10 +66,10 @@ def listCompleted(todayOnly=False):
 		print "\tPerhaps you are in the wrong directory?"
 		print "\tor you need to run --init to create a tigger instance."
 		exit()
+		
 	tasksFile = open("./.tigger_completed","r")
 	tasks = tasksFile.readlines()
 	for n,t in enumerate(tasks):
-		# todo: parse JSON
 		jt=""
 		try:
 			jt = json.loads(t.strip())
@@ -77,10 +78,13 @@ def listCompleted(todayOnly=False):
 			print "malformed line in .tigger_completed, line", n+1
 
 		if todayOnly and jt!="":
-			print "things finished today"
-			print jt
+			if "completed" in jt:
+				# check for existance of "completed" and if dt is today
+				dt=datetime.datetime.strptime(jt["completed"],"%Y-%m-%d %H:%M:%S.%f")
+				if datetime.date.today()==dt.date():
+					print jt
 		elif jt!="":
-			print t.strip()
+			print jt
 
 # todo: duplicate of listComplete?
 def listTasks():
@@ -115,17 +119,17 @@ if __name__ == "__main__":
 	elif opts.new_task!=False:
 		print "creating new task", opts.new_task
 	elif opts.del_task!=False:
-		print "deleting task", opts.new_task
+		print "deleting task", opts.del_task
 	elif opts.tig_flag!=False:
-		print "lets tigger", opts.new_task
+		print "lets tigger"
 	elif opts.comp_flag!=False:
-		print "list completed tasks", opts.new_task
+		print "list completed tasks"
 		listCompleted()
 	elif opts.tasks_flag!=False:
-		print "list outstangind tasks", opts.new_task
+		print "list outstangind tasks"
 		listTasks()
 	elif opts.glory_flag!=False:
-		print "Bathe in your accomplishments", opts.new_task
+		print "Today's accomplishments"
 		listCompleted(True)
 	else:
 		print "error no valid option selected, use -h for help"
