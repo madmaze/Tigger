@@ -1,5 +1,6 @@
-added python implementation stub
+add json example
 Separate tasks added by different users
 Add better tracking of who completed what task
 remove rubygems dependency
 Add pivotal tracker integration.
+

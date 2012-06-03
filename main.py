@@ -3,7 +3,12 @@
 import optparse
 import os
 import shutil
+import json
+
 postCommitHookPath="./git-commit-hook.py"
+# todo: colored output?
+#	http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
+
 
 # Asks the user a question and veryfies y/n by returning True or False
 def confirmQuestion(Question):
@@ -38,6 +43,7 @@ def initTigger(force):
 		except err:
 			print err
 			print "failed to copy post-commit hook from",postCommitHookPath,"to .git/hooks/post-commit"
+
 		# Initialize files
 		os.system("touch .tigger")
 		os.system("touch .tigger_completed")
@@ -53,7 +59,7 @@ def initTigger(force):
 		exit()
 	print "Init done."
 
-def listCompleted():
+def listCompleted(todayOnly=False):
 	if os.path.exists("./.tigger_completed") == False:
 		print "It looks like .tigger_completed is missing."
 		print "\tPerhaps you are in the wrong directory?"
@@ -63,7 +69,13 @@ def listCompleted():
 	tasks = tasksFile.readlines()
 	for t in tasks:
 		# todo: parse JSON
-		print t.strip()
+		if todayOnly:
+			print "things finished today"
+			jt = json.loads(t.strip())
+			print jt
+			
+		else:
+			print t.strip()
 
 # todo: duplicate of listComplete?
 def listTasks():
@@ -109,6 +121,7 @@ if __name__ == "__main__":
 		listTasks()
 	elif opts.glory_flag!=False:
 		print "Bathe in your accomplishments", opts.new_task
+		listCompleted(True)
 	else:
 		print "error no valid option selected, use -h for help"
 		

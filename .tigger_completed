@@ -1,5 +1,4 @@
-1310006434<?TIG?>multiple commit issue
-1310006585<?TIG?>fix multiple task per commit not getting marked off
-1310006585<?TIG?>fix 2
-1310006605<?TIG?>fix 1
-1310006605<?TIG?>fix 1
+{"completed":"2012-06-03 02:40:30.221491","task":"implemented listCompleted and listTasks"}
+{"completed":"2012-06-03 02:40:30.221522","task":"implemented listCompleted"}
+{"completed":"2012-06-03 02:40:30.221547","task":"and listTasks"}
+{"completed":"2012-06-03 02:40:30.221572","task":"listTasks"}
