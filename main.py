@@ -52,7 +52,31 @@ def initTigger(force):
 		print "ERROR: no git-repo found. (looking for .git)"
 		exit()
 	print "Init done."
-	
+
+def listCompleted():
+	if os.path.exists("./.tigger_completed") == False:
+		print "It looks like .tigger_completed is missing."
+		print "\tPerhaps you are in the wrong directory?"
+		print "\tor you need to run --init to create a tigger instance."
+		exit()
+	tasksFile = open("./.tigger_completed","r")
+	tasks = tasksFile.readlines()
+	for t in tasks:
+		# todo: parse JSON
+		print t.strip()
+
+# todo: duplicate of listComplete?
+def listTasks():
+	if os.path.exists("./.tigger") == False:
+		print "It looks like .tigger is missing."
+		print "\tPerhaps you are in the wrong directory?"
+		print "\tor you need to run --init to create a tigger instance."
+		exit()
+	tasksFile = open("./.tigger","r")
+	tasks = tasksFile.readlines()
+	for t in tasks:
+		# todo: parse JSON
+		print t.strip()
 
 if __name__ == "__main__":
 	optparser = optparse.OptionParser()
@@ -79,10 +103,12 @@ if __name__ == "__main__":
 		print "lets tigger", opts.new_task
 	elif opts.comp_flag!=False:
 		print "list completed tasks", opts.new_task
+		listCompleted()
 	elif opts.tasks_flag!=False:
 		print "list outstangind tasks", opts.new_task
+		listTasks()
 	elif opts.glory_flag!=False:
 		print "Bathe in your accomplishments", opts.new_task
 	else:
-		print "error no valid option selected"
+		print "error no valid option selected, use -h for help"
 		
