@@ -40,7 +40,7 @@ def initTigger(force):
 			# set permissions
 			os.system("chmod 744 .git/hooks/post-commit")
 			# todo: check permissions after setting
-		except err:
+		except Exception as err:
 			print err
 			print "failed to copy post-commit hook from",postCommitHookPath,"to .git/hooks/post-commit"
 
@@ -67,14 +67,19 @@ def listCompleted(todayOnly=False):
 		exit()
 	tasksFile = open("./.tigger_completed","r")
 	tasks = tasksFile.readlines()
-	for t in tasks:
+	for n,t in enumerate(tasks):
 		# todo: parse JSON
-		if todayOnly:
-			print "things finished today"
+		jt=""
+		try:
 			jt = json.loads(t.strip())
+		except Exception as err:
+			print err
+			print "malformed line in .tigger_completed, line", n+1
+
+		if todayOnly and jt!="":
+			print "things finished today"
 			print jt
-			
-		else:
+		elif jt!="":
 			print t.strip()
 
 # todo: duplicate of listComplete?
