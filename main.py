@@ -99,6 +99,9 @@ def listTasks():
 		# todo: parse JSON
 		print t.strip()
 
+def addTask(task):
+	print task
+
 if __name__ == "__main__":
 	optparser = optparse.OptionParser()
 	optparser.add_option("-i", "--init", action="store_true", dest="init_flag", default=False, help="Initialize a pyTigger")
@@ -118,6 +121,7 @@ if __name__ == "__main__":
 		initTigger(opts.force_flag)
 	elif opts.new_task!=False:
 		print "creating new task", opts.new_task
+		addTask(opts.new_task)
 	elif opts.del_task!=False:
 		print "deleting task", opts.del_task
 	elif opts.tig_flag!=False:
