@@ -98,9 +98,36 @@ def listTasks():
 	for t in tasks:
 		# todo: parse JSON
 		print t.strip()
+		
+# Return a new(hopefully unique) Task ID
+def getNewTID():
+	return 1
+
+# Return the current git user
+def getGitUser():
+	return "Matthias Lee"
 
 def addTask(task):
-	print task
+	print "adding:",task
+	if os.path.exists("./.tigger") == False:
+		print "It looks like .tigger is missing."
+		print "\tPerhaps you are in the wrong directory?"
+		print "\tor you need to run --init to create a tigger instance."
+		exit()
+	liveTasks =  open(".tigger", "a")
+	tid=getNewTID()
+	createdOn=str(datetime.datetime.now())
+	createdBy=getGitUser()
+	state="new"
+	newTiggerTask='{"tid":'+str(tid)+','
+	newTiggerTask+='"task":"'+task+'",'
+	newTiggerTask+='"createdOn":"'+createdOn+'",'
+	newTiggerTask+='"createdBy":"'+createdBy+'",'
+	newTiggerTask+='"state":"new",'
+	newTiggerTask+='"priority":"normal"}\n'
+	print newTiggerTask
+	liveTasks.write(newTiggerTask)
+	liveTasks.close()
 
 if __name__ == "__main__":
 	optparser = optparse.OptionParser()
